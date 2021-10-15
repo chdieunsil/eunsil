@@ -1,0 +1,472 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>여러개 마커에 이벤트 등록하기1</title>
+    
+</head>
+<body>
+<div id="map" style="width:100%;height:350px;"></div>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1f761e5262ad72ead9e11f558448ede4"></script>
+<script>
+var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
+    mapOption = { 
+        center: new kakao.maps.LatLng(37.314820522186544, 126.83140352303941), // 지도의 중심좌표
+        level: 2 // 지도의 확대 레벨
+    };
+
+var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+ 
+// 마커를 표시할 위치와 내용을 가지고 있는 객체 배열입니다 
+var positions = [
+    {
+content: '<div>사이동 커뮤니센터</div>',
+latlng: new kakao.maps.LatLng(37.27874686,126.8522332)
+},
+{
+content: '<div>캐논코리아비즈니스솔루션</div>',
+latlng: new kakao.maps.LatLng(37.30594219,126.7387751)
+},
+{
+content: '<div>한국지엠안산서비스센터</div>',
+latlng: new kakao.maps.LatLng(37.28101745,126.8487845)
+},
+{
+content: '<div>푸른마을고잔주공5단지</div>',
+latlng: new kakao.maps.LatLng(37.30379767,126.8557872)
+},
+{
+content: '<div>안산성포동에스케이아파트</div>',
+latlng: new kakao.maps.LatLng(37.32508404,126.8435397)
+},
+{
+content: '<div>고잔동주공아파트7단지</div>',
+latlng: new kakao.maps.LatLng(37.32724202,126.8393446)
+},
+{
+content: '<div>반월역환승주차장</div>',
+latlng: new kakao.maps.LatLng(37.31183904,126.9041771)
+},
+{
+content: '<div>안산역환승주차장</div>',
+latlng: new kakao.maps.LatLng(37.32700664,126.790325)
+},
+{
+content: '<div>공영주차장116호</div>',
+latlng: new kakao.maps.LatLng(37.30417146,126.8601298)
+},
+{
+content: '<div>화랑유원지 2주차장</div>',
+latlng: new kakao.maps.LatLng(37.32507331,126.8099722)
+},
+{
+content: '<div>공단삼거리 공영주차장(B)</div>',
+latlng: new kakao.maps.LatLng(37.31292516,126.7911317)
+},
+{
+content: '<div>아리아나모텔</div>',
+latlng: new kakao.maps.LatLng(37.29402131,126.8715531)
+},
+{
+content: '<div>안산레이크타운푸르지오</div>',
+latlng: new kakao.maps.LatLng(37.304846,126.830299)
+},
+{
+content: '<div>한국전기연구원</div>',
+latlng: new kakao.maps.LatLng(37.29149059,126.8420942)
+},
+{
+content: '<div>안산올림픽기념관</div>',
+latlng: new kakao.maps.LatLng(37.32633172,126.8281556)
+},
+{
+content: '<div>고잔주유소</div>',
+latlng: new kakao.maps.LatLng(37.31831699,126.8263084)
+},
+{
+content: '<div>경기테크노파크</div>',
+latlng: new kakao.maps.LatLng(37.29092695,126.8299937)
+},
+{
+content: '<div>성호공원 주차장</div>',
+latlng: new kakao.maps.LatLng(37.31187095,126.8641311)
+},
+{
+content: '<div>대부도 공영 주차장</div>',
+latlng: new kakao.maps.LatLng(37.28396014,126.5700563)
+},
+{
+content: '<div>롯데마트 상록점</div>',
+latlng: new kakao.maps.LatLng(37.29387883,126.8601026)
+},
+{
+content: '<div>안산시 이마트TR(안산점)</div>',
+latlng: new kakao.maps.LatLng(37.33117152,126.7849928)
+},
+{
+content: '<div>안산시 시화나래휴게소</div>',
+latlng: new kakao.maps.LatLng(37.31058158,126.6056701)
+},
+{
+content: '<div>안산시청 백운동복합청사</div>',
+latlng: new kakao.maps.LatLng(37.32808892,126.7970431)
+},
+{
+content: '<div>안산 방아머리 제2주차장</div>',
+latlng: new kakao.maps.LatLng(37.28684487,126.5747024)
+},
+{
+content: '<div>안산사동자동차공업사</div>',
+latlng: new kakao.maps.LatLng(37.27929372,126.8467689)
+},
+{
+content: '<div>초지동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.30993408,126.8168589)
+},
+{
+content: '<div>안산문화예술의전당</div>',
+latlng: new kakao.maps.LatLng(37.31846036,126.8230003)
+},
+{
+content: '<div>이레파크</div>',
+latlng: new kakao.maps.LatLng(37.30121691,126.8619248)
+},
+{
+content: '<div>안산시 감골시민홀</div>',
+latlng: new kakao.maps.LatLng(37.29335732,126.8553572)
+},
+{
+content: '<div>안산시 대부동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.24355965,126.5849619)
+},
+{
+content: '<div>안산시 상록체육관</div>',
+latlng: new kakao.maps.LatLng(37.30095511,126.868573)
+},
+{
+content: '<div>안산시 어촌민속박물관주차장</div>',
+latlng: new kakao.maps.LatLng(37.19251153,126.6461277)
+},
+{
+content: '<div>단원보건소</div>',
+latlng: new kakao.maps.LatLng(37.32102085,126.8152687)
+},
+{
+content: '<div>안산시 산업지원본부</div>',
+latlng: new kakao.maps.LatLng(37.31977461,126.8117587)
+},
+{
+content: '<div>안산시청별관 환경교통국</div>',
+latlng: new kakao.maps.LatLng(37.31765095,126.8296549)
+},
+{
+content: '<div>어촌민속박물관 주차장</div>',
+latlng: new kakao.maps.LatLng(37.19251153,126.6461277)
+},
+{
+content: '<div>강욱순스포츠센터</div>',
+latlng: new kakao.maps.LatLng(37.29451767,126.7903379)
+},
+{
+content: '<div>스위스모텔</div>',
+latlng: new kakao.maps.LatLng(37.27983147,126.8494828)
+},
+{
+content: '<div>청원자동차정비㈜</div>',
+latlng: new kakao.maps.LatLng(37.29160534,126.8766162)
+},
+{
+content: '<div>안산지사</div>',
+latlng: new kakao.maps.LatLng(37.32067557,126.8273595)
+},
+{
+content: '<div>안산차량등록사업소</div>',
+latlng: new kakao.maps.LatLng(37.33486366,126.8071283)
+},
+{
+content: '<div>안산빌딩</div>',
+latlng: new kakao.maps.LatLng(37.31968898,126.8298174)
+},
+{
+content: '<div>라이프인카</div>',
+latlng: new kakao.maps.LatLng(37.30077609,126.8106456)
+},
+{
+content: '<div>안산호수공원 3 주차장</div>',
+latlng: new kakao.maps.LatLng(37.30211355,126.830075)
+},
+{
+content: '<div>안산시 수암봉공영주차장</div>',
+latlng: new kakao.maps.LatLng(37.36452911,126.8831004)
+},
+{
+content: '<div>롯데마트 선부점</div>',
+latlng: new kakao.maps.LatLng(37.34142025,126.81549)
+},
+{
+content: '<div>안산시 대우테크노피아</div>',
+latlng: new kakao.maps.LatLng(37.32181777,126.7883996)
+},
+{
+content: '<div>안산시 이마트(고잔점)</div>',
+latlng: new kakao.maps.LatLng(37.30279906,126.8128613)
+},
+{
+content: '<div>와동체육관</div>',
+latlng: new kakao.maps.LatLng(37.34002504,126.8189459)
+},
+{
+content: '<div>안산단원경찰서</div>',
+latlng: new kakao.maps.LatLng(37.32183421,126.8282183)
+},
+{
+content: '<div>안산상록경찰서</div>',
+latlng: new kakao.maps.LatLng(37.29979536,126.8442673)
+},
+{
+content: '<div>안산시민시장(초급속)</div>',
+latlng: new kakao.maps.LatLng(37.32557769,126.8052835)
+},
+{
+content: '<div>롯데마트 안산점</div>',
+latlng: new kakao.maps.LatLng(null,null)
+},
+{
+content: '<div>서울프라자관리단</div>',
+latlng: new kakao.maps.LatLng(37.33382006,126.8121047)
+},
+{
+content: '<div>안산시_안산동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.36187759,126.8733478)
+},
+{
+content: '<div>삼일제약</div>',
+latlng: new kakao.maps.LatLng(37.31452347,126.7910415)
+},
+{
+content: '<div>와스타디움1</div>',
+latlng: new kakao.maps.LatLng(null,null)
+},
+{
+content: '<div>안산시_본오2동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.29626065,126.8722904)
+},
+{
+content: '<div>안산시 호수공원실내수영장</div>',
+latlng: new kakao.maps.LatLng(37.30211355,126.830075)
+},
+{
+content: '<div>안산시 안산시배드민턴전용경기장</div>',
+latlng: new kakao.maps.LatLng(37.34361263,126.8348095)
+},
+{
+content: '<div>안산시 안산문화예술의전당</div>',
+latlng: new kakao.maps.LatLng(37.31846036,126.8230003)
+},
+{
+content: '<div>나무호텔</div>',
+latlng: new kakao.maps.LatLng(37.33267465,126.808898)
+},
+{
+content: '<div>안산운전면허시험장</div>',
+latlng: new kakao.maps.LatLng(37.34556687,126.8281198)
+},
+{
+content: '<div>안산시청</div>',
+latlng: new kakao.maps.LatLng(37.32266989,126.8309422)
+},
+{
+content: '<div>한국산업단지공단 경기지역본부</div>',
+latlng: new kakao.maps.LatLng(37.31445833,126.7967412)
+},
+{
+content: '<div>안산고잔6차푸르지오</div>',
+latlng: new kakao.maps.LatLng(37.29422641,126.8253048)
+},
+{
+content: '<div>홈플러스 안산점</div>',
+latlng: new kakao.maps.LatLng(37.31712489,126.8500757)
+},
+{
+content: '<div>안산 대부도서관 주차장</div>',
+latlng: new kakao.maps.LatLng(37.24047168,126.5831165)
+},
+{
+content: '<div>안산 대부해양본부 주차장</div>',
+latlng: new kakao.maps.LatLng(37.27189479,126.5671256)
+},
+{
+content: '<div>원시동 공영주차장</div>',
+latlng: new kakao.maps.LatLng(37.31156616,126.7919928)
+},
+{
+content: '<div>상록수역앞공영주차장</div>',
+latlng: new kakao.maps.LatLng(37.3019264,126.8664841)
+},
+{
+content: '<div>안산시U정보센터</div>',
+latlng: new kakao.maps.LatLng(37.29839346,126.8450354)
+},
+{
+content: '<div>올림픽기념관</div>',
+latlng: new kakao.maps.LatLng(37.32633172,126.8281556)
+},
+{
+content: '<div>안산시_일동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.31033484,126.8662037)
+},
+{
+content: '<div>안산시_사동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.29710156,126.8510491)
+},
+{
+content: '<div>안산시_해양동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.29472805,126.8200314)
+},
+{
+content: '<div>안산시_부곡동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.33178721,126.8610907)
+},
+{
+content: '<div>안산시_성포동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.32069096,126.8494581)
+},
+{
+content: '<div>안산시_고잔동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.32683939,126.8192003)
+},
+{
+content: '<div>안산시_호수동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.31028374,126.8243827)
+},
+{
+content: '<div>안산시_백운동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.33161467,126.8018415)
+},
+{
+content: '<div>안산시_신길동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.33030317,126.785983)
+},
+{
+content: '<div>안산시_선부2동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.3383633,126.8029192)
+},
+{
+content: '<div>안산동보건지소</div>',
+latlng: new kakao.maps.LatLng(37.36433141,126.8771557)
+},
+{
+content: '<div>신안산대학교</div>',
+latlng: new kakao.maps.LatLng(37.30902016,126.8054133)
+},
+{
+content: '<div>와동체육관</div>',
+latlng: new kakao.maps.LatLng(37.34002504,126.8189459)
+},
+{
+content: '<div>안산시청 주차장</div>',
+latlng: new kakao.maps.LatLng(37.32266989,126.8309422)
+},
+{
+content: '<div>안산시_이동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.3054386,126.860851)
+},
+{
+content: '<div>안산시_사이동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.28981392,126.8518788)
+},
+{
+content: '<div>안산시_본오3동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.30146159,126.8638409)
+},
+{
+content: '<div>안산시_월피동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.33370209,126.85683)
+},
+{
+content: '<div>안산시_반월동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.30605114,126.9021685)
+},
+{
+content: '<div>안산시_중앙동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.32393406,126.8377482)
+},
+{
+content: '<div>안산시_원곡동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.3332801,126.7908765)
+},
+{
+content: '<div>안산시_선부1동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.3343069,126.8044129)
+},
+{
+content: '<div>안산시_선부3동행정복지센터</div>',
+latlng: new kakao.maps.LatLng(37.34504472,126.8125443)
+}
+];
+
+for (var i = 0; i < positions.length; i ++) {
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        map: map, // 마커를 표시할 지도
+        position: positions[i].latlng // 마커의 위치
+    });
+
+    // 마커에 표시할 인포윈도우를 생성합니다 
+    var infowindow = new kakao.maps.InfoWindow({
+        content: positions[i].content // 인포윈도우에 표시할 내용
+    });
+
+    // 마커에 mouseover 이벤트와 mouseout 이벤트를 등록합니다
+    // 이벤트 리스너로는 클로저를 만들어 등록합니다 
+    // for문에서 클로저를 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
+    kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+    kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+}
+
+// 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+function makeOverListener(map, marker, infowindow) {
+    return function() {
+        infowindow.open(map, marker);
+    };
+}
+
+// 인포윈도우를 닫는 클로저를 만드는 함수입니다 
+function makeOutListener(infowindow) {
+    return function() {
+        infowindow.close();
+    };
+}
+
+/* 아래와 같이도 할 수 있습니다 */
+/*
+for (var i = 0; i < positions.length; i ++) {
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        map: map, // 마커를 표시할 지도
+        position: positions[i].latlng // 마커의 위치
+    });
+
+    // 마커에 표시할 인포윈도우를 생성합니다 
+    var infowindow = new kakao.maps.InfoWindow({
+        content: positions[i].content // 인포윈도우에 표시할 내용
+    });
+
+    // 마커에 이벤트를 등록하는 함수 만들고 즉시 호출하여 클로저를 만듭니다
+    // 클로저를 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
+    (function(marker, infowindow) {
+        // 마커에 mouseover 이벤트를 등록하고 마우스 오버 시 인포윈도우를 표시합니다 
+        kakao.maps.event.addListener(marker, 'mouseover', function() {
+            infowindow.open(map, marker);
+        });
+
+        // 마커에 mouseout 이벤트를 등록하고 마우스 아웃 시 인포윈도우를 닫습니다
+        kakao.maps.event.addListener(marker, 'mouseout', function() {
+            infowindow.close();
+        });
+    })(marker, infowindow);
+}
+*/
+</script>
+</body>
+</html>
